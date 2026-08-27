@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Street Runner</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            overflow: hidden;
+            background: #111;
+            font-family: Arial, sans-serif;
+            user-select: none;
+        }
+
+        #game {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            background:
+                linear-gradient(
+                    to bottom,
+                    #52c7ff 0%,
+                    #b9edff 42%,
+                    #555 42%,
+                    #222 100%
+                );
+        }
+
+        /* Céu */
+        .cloud {
+            position: absolute;
+            width: 150px;
+            height: 45px;
+            background: white;
+            border-radius: 50px;
+            opacity: 0.75;
+        }
+
+        .cloud::before,
+        .cloud::after {
+            content: "";
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+        }
+
+        .cloud::before {
+            width: 65px;
+            height: 65px;
+            left: 25px;
+            top: -30px;
+        }
+
+        .cloud::after {
+            width: 80px;
+            height: 80px;
+            right: 20px;
+            top: -40px;
+        }
+
+        .cloud1 {
+            top: 12%;
+            left: 5%;
+            animation: cloudMove 25s linear infinite;
+        }
+
+        .cloud2 {
+            top: 20%;
+            left: 65%;
+            animation: cloudMove 35s linear infinite;
+        }
+
+        @keyframes cloudMove {
+            from {
+                transform: translateX(-200px);
+            }
+
+            to {
+                transform: translateX(120vw);
+            }
+        }
+
+        /* Cidade */
+        #city {
+            position: absolute;
+            bottom: 47%;
+            width: 100%;
+            height: 170px;
+            display: flex;
+            align-items: flex-end;
+            gap: 8px;
+        }
+
+        .building {
+            background: #34495e;
+            border: 2px solid #263746;
+            width: 70px;
+            height: 100px;
+        }
+
+        .building:nth-child(2) {
+            height: 145px;
+        }
+
+        .building:nth-child(3) {
+            height: 90px;
+        }
+
+        .building:nth-child(4) {
+            height: 130px;
+        }
+
+        .building:nth-child(5) {
+            height: 170px;
+        }
+
+        .building:nth-child(6) {
+            height: 115px;
+        }
+
+        .building:nth-child(7) {
+            height: 150px;
+        }
+
+        /* HUD */
+        #hud {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            right: 15px;
+            z-index: 20;
+            display: flex;
+            justify-content: space-between;
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+            text-shadow: 2px 2px 3px #000;
+        }
+
+        #score,
+        #coins {
+            background: rgba(0, 0, 0, 0.4);
+            padding: 10px 15px;
+            border-radius: 12px;
+        }
+
+        /* Pista */
+        #track {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 70%;
+            height: 60%;
+            background:
+                repeating-linear-gradient(
+                    to bottom,
+                    #383838 0px,
+                    #383838 45px,
+                    #303030 45px,
+                    #303030 90px
+                );
+            clip-path: polygon(
+                35% 0,
+                65% 0,
+                100% 100%,
+                0 100%
+            );
+            border-left: 8px solid #222;
+            border-right: 8px solid #222;
+        }
+
+        /* Trilhos */
+        .rail {
+            position: absolute;
+            bottom: 0;
+            height: 100%;
+            width: 7px;
+            background: #aaa;
+            box-shadow: 0 0 4px #fff;
+        }
+
+        .rail1 {
+            left: 32%;
+        }
+
+        .rail2 {
+            left: 50%;
+        }
+
+        .rail3 {
+            left: 68%;
+        }
+
+        /* Jogador */
+        #player {
+            position: absolute;
+            width: 48px;
+            height: 65px;
+            bottom: 13%;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            transition: left 0.15s ease;
+        }
+
+        .head {
+            width: 30px;
+            height: 30px;
+            background: #d99566;
+            border-radius: 50%;
+            margin: auto;
+            border: 3px solid #222;
+        }
+
+        .body {
+            width: 35px;
+            height: 32px;
+            background: #e74c3c;
+            margin: -2px auto 0;
+            border-radius: 10px 10px 5px 5px;
+        }
+
+        .leg {
+            position: absolute;
+            bottom: 0;
+            width: 12px;
+            height: 25px;
+            background: #273746;
+            border-radius: 5px;
+        }
+
+        .leg.left {
+            left: 10px;
+        }
+
+        .leg.right {
+            right: 10px;
+        }
+
+        .arm {
+            position: absolute;
+            top: 30px;
+            width: 10px;
+            height: 27px;
+            background: #d99566;
+            border-radius: 8px;
+        }
+
+        .arm.left {
+            left: 0;
+            transform: rotate(25deg);
+        }
+
+        .arm.right {
+            right: 0;
+            transform: rotate(-25deg);
+        }
+
+        .running {
+            animation: run 0.25s infinite alternate;
+        }
+
+        @keyframes run {
+            from {
+                transform: translateX(-50%) translateY(0);
+            }
+
+            to {
+                transform: translateX(-50%) translateY(-5px);
+            }
+        }
+
+        /* Obstáculos */
+        .obstacle {
+            position: absolute;
+            width: 55px;
+            height: 45px;
+            background: #f39c12;
+            border: 4px solid #c0392b;
+            border-radius: 8px;
+            z-index: 8;
+        }
+
+        .obstacle::before {
+            content: "⚠";
+            position: absolute;
+            font-size: 28px;
+            color: #222;
+            left: 10px;
+            top: 4px;
+        }
+
+        /* Moedas */
+        .coin {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background: #ffd700;
+            border: 4px solid #e5a900;
+            border-radius: 50%;
+            z-index: 7;
+            box-shadow: 0 0 12px #ffe900;
+            animation: coinSpin 0.6s linear infinite;
+        }
+
+        @keyframes coinSpin {
+            0% {
+                transform: rotateY(0deg);
+            }
+
+            50% {
+                transform: rotateY(180deg);
+            }
+
+            100% {
+                transform: rotateY(360deg);
+            }
+        }
+
+        /* Tela inicial / Game Over */
+        #menu {
+            position: absolute;
+            inset: 0;
+            z-index: 50;
+            background: rgba(0, 0, 0, 0.75);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: white;
+        }
+
+        .menu-box {
+            width: min(90%, 450px);
+            padding: 35px;
+            border-radius: 25px;
+            background: linear-gradient(135deg, #222, #444);
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.8);
+        }
+
+        .menu-box h1 {
+            font-size: 42px;
+            color: #00e5ff;
+            margin-bottom: 15px;
+            text-shadow: 3px 3px #e91e63;
+        }
+
+        .menu-box p {
+            margin: 10px 0;
+            line-height: 1.5;
+        }
+
+        button {
+            border: none;
+            cursor: pointer;
+            color: white;
+            font-weight: bold;
+        }
+
+        #startButton {
+            margin-top: 20px;
+            padding: 15px 40px;
+            border-radius: 30px;
+            font-size: 20px;
+            background: linear-gradient(45deg, #e91e63, #ff9800);
+            box-shadow: 0 5px 15px rgba(255, 100, 0, 0.4);
+        }
+
+        #startButton:hover {
+            transform: scale(1.05);
+        }
+
+        /* Controles mobile */
+        #mobileControls {
+            position: absolute;
+            bottom: 20px;
+            left: 0;
+            right: 0;
+            z-index: 30;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .control {
+            width: 65px;
+            height: 65px;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.55);
+            font-size: 30px;
+        }
+
+        .control:active {
+            background: rgba(255, 255, 255, 0.4);
+        }
+
+        @media (min-width: 800px) {
+            #mobileControls {
+                display: none;
+            }
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+
+<body>
+
+<div id="game">
+
+    <div class="cloud cloud1"></div>
+    <div class="cloud cloud2"></div>
+
+    <div id="city">
+        <div class="building"></div>
+        <div class="building"></div>
+        <div class="building"></div>
+        <div class="building"></div>
+        <div class="building"></div>
+        <div class="building"></div>
+        <div class="building"></div>
+        <div class="building"></div>
+    </div>
+
+    <div id="hud">
+        <div id="score">🏆 Pontos: 0</div>
+        <div id="coins">🪙 Moedas: 0</div>
+    </div>
+
+    <div id="track">
+
+        <div class="rail rail1"></div>
+        <div class="rail rail2"></div>
+        <div class="rail rail3"></div>
+
+    </div>
+
+    <div id="player" class="running">
+
+        <div class="head"></div>
+        <div class="body"></div>
+
+        <div class="arm left"></div>
+        <div class="arm right"></div>
+
+        <div class="leg left"></div>
+        <div class="leg right"></div>
+
+    </div>
+
+    <div id="mobileControls">
+        <button class="control" id="leftBtn">⬅️</button>
+        <button class="control" id="rightBtn">➡️</button>
+    </div>
+
+    <div id="menu">
+
+        <div class="menu-box">
+
+            <h1>STREET RUNNER</h1>
+
+            <p>
+                Corra pelos trilhos, desvie dos obstáculos
+                e pegue o máximo de moedas possível!
+            </p>
+
+            <p>
+                ⌨️ Use <strong>←</strong> e <strong>→</strong>
+                para mudar de pista.
+            </p>
+
+            <p>
+                📱 No celular, use os botões na tela.
+            </p>
+
+            <button id="startButton">
+                COMEÇAR
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+    const game = document.getElementById("game");
+    const player = document.getElementById("player");
+    const scoreElement = document.getElementById("score");
+    const coinsElement = document.getElementById("coins");
+    const menu = document.getElementById("menu");
+    const startButton = document.getElementById("startButton");
+
+    const lanes = [35, 50, 65];
+
+    let currentLane = 1;
+
+    let score = 0;
+    let coins = 0;
+
+    let speed = 5;
+
+    let gameRunning = false;
+
+    let obstacleTimer;
+    let coinTimer;
+    let scoreTimer;
+    let difficultyTimer;
+
+    function updatePlayer() {
+
+        player.style.left = lanes[currentLane] + "%";
+
+    }
+
+    function moveLeft() {
+
+        if (!gameRunning) return;
+
+        if (currentLane > 0) {
+
+            currentLane--;
+
+            updatePlayer();
+
+        }
+
+    }
+
+    function moveRight() {
+
+        if (!gameRunning) return;
+
+        if (currentLane < 2) {
+
+            currentLane++;
+
+            updatePlayer();
+
+        }
+
+    }
+
+    document.addEventListener("keydown", function(event) {
+
+        if (event.key === "ArrowLeft" || event.key === "a") {
+
+            moveLeft();
+
+        }
+
+        if (event.key === "ArrowRight" || event.key === "d") {
+
+            moveRight();
+
+        }
+
+    });
+
+    document.getElementById("leftBtn")
+        .addEventListener("click", moveLeft);
+
+    document.getElementById("rightBtn")
+        .addEventListener("click", moveRight);
+
+
+    function createObstacle() {
+
+        if (!gameRunning) return;
+
+        const obstacle = document.createElement("div");
+
+        obstacle.classList.add("obstacle");
+
+        const lane = Math.floor(Math.random() * 3);
+
+        obstacle.style.left = lanes[lane] + "%";
+
+        obstacle.style.top = "-60px";
+
+        game.appendChild(obstacle);
+
+        let position = -60;
+
+        const movement = setInterval(() => {
+
+            if (!gameRunning) {
+
+                clearInterval(movement);
+                obstacle.remove();
+                return;
+
+            }
+
+            position += speed;
+
+            obstacle.style.top = position + "px";
+
+            checkCollision(obstacle, lane, movement);
+
+            if (position > window.innerHeight) {
+
+                clearInterval(movement);
+                obstacle.remove();
+
+            }
+
+        }, 20);
+
+    }
+
+
+    function createCoin() {
+
+        if (!gameRunning) return;
+
+        const coin = document.createElement("div");
+
+        coin.classList.add("coin");
+
+        const lane = Math.floor(Math.random() * 3);
+
+        coin.style.left = lanes[lane] + "%";
+
+        coin.style.top = "-40px";
+
+        game.appendChild(coin);
+
+        let position = -40;
+
+        const movement = setInterval(() => {
+
+            if (!gameRunning) {
+
+                clearInterval(movement);
+                coin.remove();
+                return;
+
+            }
+
+            position += speed;
+
+            coin.style.top = position + "px";
+
+            checkCoinCollision(coin, lane, movement);
+
+            if (position > window.innerHeight) {
+
+                clearInterval(movement);
+                coin.remove();
+
+            }
+
+        }, 20);
+
+    }
+
+
+    function checkCollision(obstacle, lane, movement) {
+
+        const playerRect = player.getBoundingClientRect();
+        const obstacleRect = obstacle.getBoundingClientRect();
+
+        const sameLane =
+            Math.abs(currentLane - lane) === 0;
+
+        const collision =
+            playerRect.left < obstacleRect.right &&
+            playerRect.right > obstacleRect.left &&
+            playerRect.top < obstacleRect.bottom &&
+            playerRect.bottom > obstacleRect.top;
+
+        if (sameLane && collision) {
+
+            gameOver();
+
+            clearInterval(movement);
+
+        }
+
+    }
+
+
+    function checkCoinCollision(coin, lane, movement) {
+
+        const playerRect = player.getBoundingClientRect();
+        const coinRect = coin.getBoundingClientRect();
+
+        const sameLane =
+            Math.abs(currentLane - lane) === 0;
+
+        const collision =
+            playerRect.left < coinRect.right &&
+            playerRect.right > coinRect.left &&
+            playerRect.top < coinRect.bottom &&
+            playerRect.bottom > coinRect.top;
+
+        if (sameLane && collision) {
+
+            coins++;
+
+            score += 50;
+
+            updateHUD();
+
+            coin.remove();
+
+            clearInterval(movement);
+
+        }
+
+    }
+
+
+    function updateHUD() {
+
+        scoreElement.innerHTML =
+            "🏆 Pontos: " + Math.floor(score);
+
+        coinsElement.innerHTML =
+            "🪙 Moedas: " + coins;
+
+    }
+
+
+    function increaseDifficulty() {
+
+        if (!gameRunning) return;
+
+        speed += 0.5;
+
+    }
+
+
+    function startGame() {
+
+        score = 0;
+        coins = 0;
+
+        speed = 5;
+
+        currentLane = 1;
+
+        updatePlayer();
+        updateHUD();
+
+        gameRunning = true;
+
+        menu.classList.add("hidden");
+
+        clearInterval(obstacleTimer);
+        clearInterval(coinTimer);
+        clearInterval(scoreTimer);
+        clearInterval(difficultyTimer);
+
+        obstacleTimer = setInterval(
+            createObstacle,
+            1000
+        );
+
+        coinTimer = setInterval(
+            createCoin,
+            700
+        );
+
+        scoreTimer = setInterval(() => {
+
+            if (gameRunning) {
+
+                score += 1;
+
+                updateHUD();
+
+            }
+
+        }, 100);
+
+        difficultyTimer = setInterval(
+            increaseDifficulty,
+            5000
+        );
+
+    }
+
+
+    function gameOver() {
+
+        gameRunning = false;
+
+        clearInterval(obstacleTimer);
+        clearInterval(coinTimer);
+        clearInterval(scoreTimer);
+        clearInterval(difficultyTimer);
+
+        menu.classList.remove("hidden");
+
+        document.querySelector(".menu-box").innerHTML = `
+
+            <h1>GAME OVER</h1>
+
+            <p>🏆 Pontuação: <strong>${Math.floor(score)}</strong></p>
+
+            <p>🪙 Moedas: <strong>${coins}</strong></p>
+
+            <p>🚀 Velocidade alcançada: <strong>${speed.toFixed(1)}</strong></p>
+
+            <button id="startButton">
+                JOGAR NOVAMENTE
+            </button>
+
+        `;
+
+        document
+            .getElementById("startButton")
+            .addEventListener("click", startGame);
+
+    }
+
+
+    startButton.addEventListener(
+        "click",
+        startGame
+    );
+
+    updatePlayer();
+
+</script>
+
+</body>
+</html>
