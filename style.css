@@ -1,0 +1,509 @@
+/* =========================================
+   CONFIGURAÇÕES GERAIS
+========================================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    min-height: 100vh;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    background:
+        linear-gradient(
+            135deg,
+            #141e30,
+            #243b55
+        );
+
+    color: white;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    padding: 20px;
+}
+
+
+/* =========================================
+   CONTAINER
+========================================= */
+
+.container {
+    width: 100%;
+    max-width: 950px;
+
+    padding: 30px;
+
+    background:
+        rgba(255, 255, 255, 0.08);
+
+    border:
+        1px solid rgba(255, 255, 255, 0.15);
+
+    border-radius: 25px;
+
+    box-shadow:
+        0 20px 60px rgba(0, 0, 0, 0.5);
+
+    backdrop-filter: blur(12px);
+}
+
+
+/* =========================================
+   CABEÇALHO
+========================================= */
+
+header {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+header h1 {
+    font-size: 42px;
+
+    color: #00e5ff;
+
+    text-shadow:
+        0 0 15px #00e5ff;
+
+    margin-bottom: 10px;
+}
+
+header p {
+    color: #d5d5d5;
+}
+
+
+/* =========================================
+   STATUS
+========================================= */
+
+.status {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 15px;
+
+    margin-bottom: 20px;
+}
+
+.status-box {
+    background:
+        rgba(0, 0, 0, 0.3);
+
+    padding: 15px;
+
+    border-radius: 15px;
+
+    text-align: center;
+}
+
+.status-box small {
+    display: block;
+
+    color: #ccc;
+
+    margin-bottom: 5px;
+}
+
+.status-box strong {
+    font-size: 25px;
+
+    color: #00e5ff;
+}
+
+
+/* =========================================
+   BARRA DE PROGRESSO
+========================================= */
+
+.progress-container {
+    width: 100%;
+
+    height: 12px;
+
+    background: #18222d;
+
+    border-radius: 20px;
+
+    overflow: hidden;
+
+    margin-bottom: 25px;
+}
+
+#progress {
+    width: 10%;
+
+    height: 100%;
+
+    background:
+        linear-gradient(
+            90deg,
+            #00e5ff,
+            #7c4dff,
+            #e91e63
+        );
+
+    border-radius: 20px;
+
+    transition:
+        width 0.4s ease;
+}
+
+
+/* =========================================
+   ÁREA PRINCIPAL
+========================================= */
+
+#game {
+    display: grid;
+
+    grid-template-columns:
+        1fr 1.3fr;
+
+    gap: 30px;
+}
+
+
+/* =========================================
+   FORCA
+========================================= */
+
+.hangman-container {
+    min-height: 350px;
+
+    background:
+        rgba(0, 0, 0, 0.25);
+
+    border-radius: 20px;
+
+    display: flex;
+
+    justify-content: center;
+    align-items: center;
+}
+
+.hangman {
+    width: 100%;
+    max-width: 320px;
+    height: 330px;
+}
+
+.draw {
+    stroke: white;
+
+    stroke-width: 8;
+
+    fill: none;
+
+    stroke-linecap: round;
+}
+
+.body-part {
+    display: none;
+}
+
+
+/* =========================================
+   ÁREA DO JOGO
+========================================= */
+
+.game-area {
+    text-align: center;
+
+    padding: 10px;
+}
+
+.category {
+    font-size: 18px;
+
+    color: #ffca28;
+
+    margin-bottom: 20px;
+}
+
+.category strong {
+    color: white;
+}
+
+
+/* =========================================
+   PALAVRA
+========================================= */
+
+.word {
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    flex-wrap: wrap;
+
+    gap: 8px;
+
+    min-height: 60px;
+
+    margin: 20px 0;
+}
+
+.letter {
+    width: 40px;
+
+    height: 50px;
+
+    border-bottom:
+        4px solid #00e5ff;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-size: 28px;
+
+    font-weight: bold;
+}
+
+
+/* =========================================
+   MENSAGEM
+========================================= */
+
+.message {
+    min-height: 30px;
+
+    margin: 15px 0;
+
+    font-size: 17px;
+
+    font-weight: bold;
+}
+
+
+/* =========================================
+   TECLADO
+========================================= */
+
+.keyboard {
+    display: grid;
+
+    grid-template-columns:
+        repeat(7, 1fr);
+
+    gap: 8px;
+
+    margin-top: 20px;
+}
+
+.key {
+    border: none;
+
+    border-radius: 8px;
+
+    padding: 12px 5px;
+
+    background: #34495e;
+
+    color: white;
+
+    font-size: 17px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.15s,
+        background 0.15s;
+}
+
+.key:hover:not(:disabled) {
+    background: #00bcd4;
+
+    transform:
+        translateY(-3px);
+}
+
+.key:disabled {
+    cursor: not-allowed;
+
+    opacity: 0.45;
+}
+
+.key.correct {
+    background: #27ae60;
+}
+
+.key.wrong {
+    background: #c0392b;
+}
+
+
+/* =========================================
+   BOTÕES
+========================================= */
+
+.action-button {
+    border: none;
+
+    padding:
+        13px 28px;
+
+    border-radius: 30px;
+
+    background:
+        linear-gradient(
+            45deg,
+            #7c4dff,
+            #e91e63
+        );
+
+    color: white;
+
+    font-size: 17px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+    margin-top: 15px;
+
+    transition:
+        transform 0.2s,
+        box-shadow 0.2s;
+}
+
+.action-button:hover {
+    transform: scale(1.05);
+
+    box-shadow:
+        0 8px 20px
+        rgba(233, 30, 99, 0.4);
+}
+
+
+/* =========================================
+   TELA FINAL
+========================================= */
+
+#endScreen {
+    text-align: center;
+
+    padding: 45px 20px;
+}
+
+.final-icon {
+    font-size: 70px;
+
+    margin-bottom: 15px;
+}
+
+#endScreen h2 {
+    font-size: 42px;
+
+    color: #00e676;
+
+    margin-bottom: 10px;
+}
+
+#endScreen p {
+    color: #ddd;
+
+    font-size: 18px;
+}
+
+#finalScore {
+    font-size: 26px;
+
+    color: #ffca28;
+
+    margin: 25px 0;
+}
+
+
+/* =========================================
+   CLASSE OCULTA
+========================================= */
+
+.hidden {
+    display: none !important;
+}
+
+
+/* =========================================
+   RESPONSIVIDADE
+========================================= */
+
+@media (max-width: 750px) {
+
+    body {
+        padding: 10px;
+    }
+
+    .container {
+        padding: 20px;
+    }
+
+    header h1 {
+        font-size: 32px;
+    }
+
+    #game {
+        grid-template-columns: 1fr;
+    }
+
+    .hangman-container {
+        min-height: 280px;
+    }
+
+    .hangman {
+        height: 280px;
+    }
+
+    .keyboard {
+        grid-template-columns:
+            repeat(6, 1fr);
+    }
+
+    .key {
+        font-size: 14px;
+        padding: 10px 3px;
+    }
+
+    .letter {
+        width: 32px;
+        height: 42px;
+        font-size: 24px;
+    }
+}
+
+
+@media (max-width: 450px) {
+
+    .status {
+        grid-template-columns: 1fr;
+    }
+
+    .keyboard {
+        grid-template-columns:
+            repeat(5, 1fr);
+    }
+
+    .category {
+        font-size: 16px;
+    }
+
+}

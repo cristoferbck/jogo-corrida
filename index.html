@@ -3,337 +3,142 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Jogo da Forca - 10 Níveis</title>
 
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            min-height: 100vh;
-            font-family: Arial, Helvetica, sans-serif;
-            background: linear-gradient(135deg, #141e30, #243b55);
-            color: white;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-
-        .game {
-            width: 100%;
-            max-width: 900px;
-            background: rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.15);
-            border-radius: 25px;
-            padding: 25px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.4);
-        }
-
-        header {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        header h1 {
-            font-size: 40px;
-            color: #00e5ff;
-            text-shadow: 0 0 15px #00e5ff;
-        }
-
-        header p {
-            color: #ddd;
-            margin-top: 8px;
-        }
-
-        .info {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
-            margin-bottom: 20px;
-        }
-
-        .info-box {
-            background: rgba(0,0,0,0.3);
-            padding: 12px;
-            border-radius: 12px;
-            text-align: center;
-        }
-
-        .info-box span {
-            display: block;
-            color: #00e5ff;
-            font-size: 24px;
-            font-weight: bold;
-            margin-top: 5px;
-        }
-
-        .content {
-            display: grid;
-            grid-template-columns: 1fr 1.3fr;
-            gap: 25px;
-        }
-
-        /* FORCA */
-
-        .hangman {
-            background: rgba(0,0,0,0.25);
-            border-radius: 20px;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        svg {
-            width: 100%;
-            max-width: 300px;
-            height: 320px;
-        }
-
-        .draw {
-            stroke: white;
-            stroke-width: 8;
-            fill: none;
-            stroke-linecap: round;
-        }
-
-        .body-part {
-            display: none;
-        }
-
-        /* JOGO */
-
-        .game-area {
-            text-align: center;
-        }
-
-        .category {
-            color: #ffca28;
-            font-size: 18px;
-            margin-bottom: 15px;
-        }
-
-        .word {
-            display: flex;
-            justify-content: center;
-            gap: 8px;
-            flex-wrap: wrap;
-            margin: 25px 0;
-        }
-
-        .letter {
-            width: 38px;
-            height: 45px;
-            border-bottom: 4px solid #00e5ff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 28px;
-            font-weight: bold;
-        }
-
-        .keyboard {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 8px;
-            margin-top: 20px;
-        }
-
-        .key {
-            border: none;
-            padding: 12px 5px;
-            border-radius: 8px;
-            background: #34495e;
-            color: white;
-            font-size: 17px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
-        .key:hover:not(:disabled) {
-            background: #00bcd4;
-            transform: translateY(-2px);
-        }
-
-        .key:disabled {
-            cursor: not-allowed;
-            opacity: 0.45;
-        }
-
-        .key.correct {
-            background: #27ae60;
-        }
-
-        .key.wrong {
-            background: #c0392b;
-        }
-
-        .message {
-            min-height: 30px;
-            margin: 15px 0;
-            font-size: 18px;
-            font-weight: bold;
-        }
-
-        .progress-container {
-            height: 12px;
-            background: #1b2631;
-            border-radius: 10px;
-            overflow: hidden;
-            margin: 20px 0;
-        }
-
-        .progress {
-            height: 100%;
-            width: 10%;
-            background: linear-gradient(90deg, #00e5ff, #7c4dff);
-            transition: width 0.4s;
-        }
-
-        button.action {
-            border: none;
-            padding: 13px 25px;
-            border-radius: 25px;
-            background: linear-gradient(45deg, #7c4dff, #e91e63);
-            color: white;
-            font-size: 17px;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-
-        button.action:hover {
-            transform: scale(1.04);
-        }
-
-        .hidden {
-            display: none;
-        }
-
-        /* TELA FINAL */
-
-        #endScreen {
-            text-align: center;
-            padding: 40px 20px;
-        }
-
-        #endScreen h2 {
-            font-size: 38px;
-            color: #00e676;
-            margin-bottom: 15px;
-        }
-
-        #finalScore {
-            font-size: 25px;
-            margin: 20px;
-            color: #ffca28;
-        }
-
-        /* RESPONSIVO */
-
-        @media (max-width: 700px) {
-
-            .content {
-                grid-template-columns: 1fr;
-            }
-
-            .info {
-                grid-template-columns: 1fr;
-            }
-
-            header h1 {
-                font-size: 30px;
-            }
-
-            .keyboard {
-                grid-template-columns: repeat(6, 1fr);
-            }
-
-            .key {
-                font-size: 14px;
-                padding: 10px 2px;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-<div class="game">
+    <main class="container">
 
-    <header>
-        <h1>🎯 JOGO DA FORCA</h1>
-        <p>Descubra a palavra antes que a forca seja completada!</p>
-    </header>
+        <header>
+            <h1>🎯 Jogo da Forca</h1>
+            <p>Descubra a palavra antes que a forca seja completada!</p>
+        </header>
 
-    <div id="gameScreen">
+        <!-- INFORMAÇÕES -->
 
-        <div class="info">
+        <section class="status">
 
-            <div class="info-box">
-                Nível
-                <span id="level">1/10</span>
+            <div class="status-box">
+                <small>Nível</small>
+                <strong id="level">1/10</strong>
             </div>
 
-            <div class="info-box">
-                Pontos
-                <span id="score">0</span>
+            <div class="status-box">
+                <small>Pontos</small>
+                <strong id="score">0</strong>
             </div>
 
-            <div class="info-box">
-                Erros
-                <span id="errors">0/6</span>
+            <div class="status-box">
+                <small>Erros</small>
+                <strong id="errors">0/6</strong>
             </div>
 
-        </div>
+        </section>
+
+        <!-- PROGRESSO -->
 
         <div class="progress-container">
-            <div class="progress" id="progress"></div>
+            <div id="progress"></div>
         </div>
 
-        <div class="content">
+        <section id="game">
 
-            <!-- DESENHO DA FORCA -->
+            <!-- FORCA -->
 
-            <div class="hangman">
+            <div class="hangman-container">
 
-                <svg viewBox="0 0 300 320">
+                <svg
+                    class="hangman"
+                    viewBox="0 0 300 320"
+                    aria-label="Desenho da forca"
+                >
 
                     <!-- Estrutura -->
-                    <line class="draw" x1="40" y1="290" x2="250" y2="290"/>
-                    <line class="draw" x1="90" y1="290" x2="90" y2="30"/>
-                    <line class="draw" x1="90" y1="30" x2="210" y2="30"/>
-                    <line class="draw" x1="210" y1="30" x2="210" y2="70"/>
+
+                    <line class="draw"
+                        x1="40" y1="290"
+                        x2="250" y2="290"/>
+
+                    <line class="draw"
+                        x1="90" y1="290"
+                        x2="90" y2="30"/>
+
+                    <line class="draw"
+                        x1="90" y1="30"
+                        x2="210" y2="30"/>
+
+                    <line class="draw"
+                        x1="210" y1="30"
+                        x2="210" y2="70"/>
 
                     <!-- Cabeça -->
-                    <circle id="part1" class="draw body-part"
-                            cx="210" cy="105" r="35"/>
+
+                    <circle
+                        id="part1"
+                        class="draw body-part"
+                        cx="210"
+                        cy="105"
+                        r="35"
+                    />
 
                     <!-- Corpo -->
-                    <line id="part2" class="draw body-part"
-                          x1="210" y1="140" x2="210" y2="220"/>
+
+                    <line
+                        id="part2"
+                        class="draw body-part"
+                        x1="210"
+                        y1="140"
+                        x2="210"
+                        y2="220"
+                    />
 
                     <!-- Braço esquerdo -->
-                    <line id="part3" class="draw body-part"
-                          x1="210" y1="155" x2="165" y2="190"/>
+
+                    <line
+                        id="part3"
+                        class="draw body-part"
+                        x1="210"
+                        y1="155"
+                        x2="165"
+                        y2="190"
+                    />
 
                     <!-- Braço direito -->
-                    <line id="part4" class="draw body-part"
-                          x1="210" y1="155" x2="255" y2="190"/>
+
+                    <line
+                        id="part4"
+                        class="draw body-part"
+                        x1="210"
+                        y1="155"
+                        x2="255"
+                        y2="190"
+                    />
 
                     <!-- Perna esquerda -->
-                    <line id="part5" class="draw body-part"
-                          x1="210" y1="220" x2="165" y2="270"/>
+
+                    <line
+                        id="part5"
+                        class="draw body-part"
+                        x1="210"
+                        y1="220"
+                        x2="165"
+                        y2="270"
+                    />
 
                     <!-- Perna direita -->
-                    <line id="part6" class="draw body-part"
-                          x1="210" y1="220" x2="255" y2="270"/>
+
+                    <line
+                        id="part6"
+                        class="draw body-part"
+                        x1="210"
+                        y1="220"
+                        x2="255"
+                        y2="270"
+                    />
 
                 </svg>
 
@@ -344,628 +149,53 @@
             <div class="game-area">
 
                 <div class="category">
-                    Categoria: <strong id="category">Animais</strong>
+                    Categoria:
+                    <strong id="category">Animais</strong>
                 </div>
 
-                <div class="word" id="word"></div>
+                <div id="word" class="word"></div>
 
-                <div class="message" id="message">
+                <div id="message" class="message">
                     Escolha uma letra!
                 </div>
 
-                <div class="keyboard" id="keyboard"></div>
+                <div id="keyboard" class="keyboard"></div>
 
-                <button class="action hidden" id="nextButton">
+                <button
+                    id="nextButton"
+                    class="action-button hidden"
+                >
                     Próximo nível ➡️
                 </button>
 
             </div>
 
-        </div>
+        </section>
 
-    </div>
+        <!-- TELA FINAL -->
 
-    <!-- TELA FINAL -->
+        <section id="endScreen" class="hidden">
 
-    <div id="endScreen" class="hidden">
+            <div class="final-icon">🏆</div>
 
-        <h2>🏆 PARABÉNS!</h2>
+            <h2>Parabéns!</h2>
 
-        <p>Você completou os 10 níveis!</p>
+            <p>Você completou os 10 níveis!</p>
 
-        <div id="finalScore"></div>
+            <div id="finalScore"></div>
 
-        <button class="action" onclick="restartGame()">
-            🔄 Jogar novamente
-        </button>
+            <button
+                id="restartButton"
+                class="action-button"
+            >
+                🔄 Jogar novamente
+            </button>
 
-    </div>
+        </section>
 
-</div>
+    </main>
 
-<script>
-
-    /*
-     * ==============================
-     * CONFIGURAÇÃO DOS 10 NÍVEIS
-     * ==============================
-     */
-
-    const levels = [
-
-        {
-            category: "Animais",
-            word: "ELEFANTE"
-        },
-
-        {
-            category: "Frutas",
-            word: "ABACAXI"
-        },
-
-        {
-            category: "Países",
-            word: "BRASIL"
-        },
-
-        {
-            category: "Profissões",
-            word: "PROFESSOR"
-        },
-
-        {
-            category: "Tecnologia",
-            word: "COMPUTADOR"
-        },
-
-        {
-            category: "Esportes",
-            word: "FUTEBOL"
-        },
-
-        {
-            category: "Natureza",
-            word: "CACHOEIRA"
-        },
-
-        {
-            category: "Comidas",
-            word: "CHOCOLATE"
-        },
-
-        {
-            category: "Espaço",
-            word: "ASTRONAUTA"
-        },
-
-        {
-            category: "Objetos",
-            word: "TELEFONE"
-        }
-
-    ];
-
-
-    /*
-     * ==============================
-     * VARIÁVEIS
-     * ==============================
-     */
-
-    let currentLevel = 0;
-
-    let currentWord = "";
-
-    let guessedLetters = [];
-
-    let errors = 0;
-
-    let score = 0;
-
-    const maxErrors = 6;
-
-
-    /*
-     * ==============================
-     * ELEMENTOS
-     * ==============================
-     */
-
-    const levelElement =
-        document.getElementById("level");
-
-    const scoreElement =
-        document.getElementById("score");
-
-    const errorsElement =
-        document.getElementById("errors");
-
-    const categoryElement =
-        document.getElementById("category");
-
-    const wordElement =
-        document.getElementById("word");
-
-    const keyboardElement =
-        document.getElementById("keyboard");
-
-    const messageElement =
-        document.getElementById("message");
-
-    const nextButton =
-        document.getElementById("nextButton");
-
-    const progressElement =
-        document.getElementById("progress");
-
-    const gameScreen =
-        document.getElementById("gameScreen");
-
-    const endScreen =
-        document.getElementById("endScreen");
-
-    const finalScore =
-        document.getElementById("finalScore");
-
-
-    /*
-     * ==============================
-     * INICIAR NÍVEL
-     * ==============================
-     */
-
-    function startLevel() {
-
-        currentWord =
-            levels[currentLevel].word;
-
-        guessedLetters = [];
-
-        errors = 0;
-
-        categoryElement.textContent =
-            levels[currentLevel].category;
-
-        levelElement.textContent =
-            `${currentLevel + 1}/10`;
-
-        errorsElement.textContent =
-            `0/${maxErrors}`;
-
-        messageElement.textContent =
-            "Escolha uma letra!";
-
-        messageElement.style.color =
-            "white";
-
-        nextButton.classList.add("hidden");
-
-        updateProgress();
-
-        drawWord();
-
-        createKeyboard();
-
-        resetHangman();
-
-    }
-
-
-    /*
-     * ==============================
-     * MOSTRAR PALAVRA
-     * ==============================
-     */
-
-    function drawWord() {
-
-        wordElement.innerHTML = "";
-
-        [...currentWord].forEach(letter => {
-
-            const letterElement =
-                document.createElement("div");
-
-            letterElement.classList.add("letter");
-
-            if (guessedLetters.includes(letter)) {
-
-                letterElement.textContent = letter;
-
-            } else {
-
-                letterElement.textContent = "";
-
-            }
-
-            wordElement.appendChild(letterElement);
-
-        });
-
-    }
-
-
-    /*
-     * ==============================
-     * TECLADO
-     * ==============================
-     */
-
-    function createKeyboard() {
-
-        keyboardElement.innerHTML = "";
-
-        const alphabet =
-            "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-
-        [...alphabet].forEach(letter => {
-
-            const button =
-                document.createElement("button");
-
-            button.classList.add("key");
-
-            button.textContent = letter;
-
-            button.addEventListener(
-                "click",
-                () => guessLetter(letter, button)
-            );
-
-            keyboardElement.appendChild(button);
-
-        });
-
-    }
-
-
-    /*
-     * ==============================
-     * JOGAR LETRA
-     * ==============================
-     */
-
-    function guessLetter(letter, button) {
-
-        if (
-            guessedLetters.includes(letter) ||
-            errors >= maxErrors
-        ) {
-            return;
-        }
-
-        button.disabled = true;
-
-        if (currentWord.includes(letter)) {
-
-            guessedLetters.push(letter);
-
-            button.classList.add("correct");
-
-            messageElement.textContent =
-                "✅ Boa! A letra está na palavra.";
-
-            messageElement.style.color =
-                "#00e676";
-
-            drawWord();
-
-            checkWin();
-
-        } else {
-
-            errors++;
-
-            button.classList.add("wrong");
-
-            messageElement.textContent =
-                "❌ Essa letra não está na palavra.";
-
-            messageElement.style.color =
-                "#ff5252";
-
-            errorsElement.textContent =
-                `${errors}/${maxErrors}`;
-
-            showHangmanPart(errors);
-
-            if (errors >= maxErrors) {
-
-                gameOver();
-
-            }
-
-        }
-
-    }
-
-
-    /*
-     * ==============================
-     * VERIFICAR VITÓRIA
-     * ==============================
-     */
-
-    function checkWin() {
-
-        const won =
-            [...currentWord].every(
-                letter => guessedLetters.includes(letter)
-            );
-
-        if (!won) return;
-
-        const points =
-            100 + ((maxErrors - errors) * 25);
-
-        score += points;
-
-        scoreElement.textContent =
-            score;
-
-        messageElement.textContent =
-            `🎉 Você acertou! +${points} pontos!`;
-
-        messageElement.style.color =
-            "#00e676";
-
-        disableKeyboard();
-
-        if (currentLevel < levels.length - 1) {
-
-            nextButton.classList.remove("hidden");
-
-        } else {
-
-            setTimeout(showEndScreen, 1000);
-
-        }
-
-    }
-
-
-    /*
-     * ==============================
-     * GAME OVER
-     * ==============================
-     */
-
-    function gameOver() {
-
-        messageElement.innerHTML =
-            `💀 Você perdeu! A palavra era <strong>${currentWord}</strong>.`;
-
-        messageElement.style.color =
-            "#ff5252";
-
-        disableKeyboard();
-
-        if (currentLevel < levels.length - 1) {
-
-            nextButton.textContent =
-                "Tentar novamente 🔄";
-
-            nextButton.classList.remove("hidden");
-
-            nextButton.onclick =
-                retryLevel;
-
-        } else {
-
-            setTimeout(showEndScreen, 1500);
-
-        }
-
-    }
-
-
-    /*
-     * ==============================
-     * PRÓXIMO NÍVEL
-     * ==============================
-     */
-
-    nextButton.addEventListener(
-        "click",
-        nextLevel
-    );
-
-
-    function nextLevel() {
-
-        currentLevel++;
-
-        nextButton.onclick =
-            null;
-
-        startLevel();
-
-    }
-
-
-    /*
-     * ==============================
-     * TENTAR NOVAMENTE
-     * ==============================
-     */
-
-    function retryLevel() {
-
-        startLevel();
-
-    }
-
-
-    /*
-     * ==============================
-     * DESABILITAR TECLADO
-     * ==============================
-     */
-
-    function disableKeyboard() {
-
-        const buttons =
-            document.querySelectorAll(".key");
-
-        buttons.forEach(button => {
-
-            button.disabled = true;
-
-        });
-
-    }
-
-
-    /*
-     * ==============================
-     * DESENHO DA FORCA
-     * ==============================
-     */
-
-    function showHangmanPart(number) {
-
-        const part =
-            document.getElementById(
-                `part${number}`
-            );
-
-        if (part) {
-
-            part.style.display =
-                "block";
-
-        }
-
-    }
-
-
-    function resetHangman() {
-
-        for (let i = 1; i <= 6; i++) {
-
-            const part =
-                document.getElementById(
-                    `part${i}`
-                );
-
-            part.style.display =
-                "none";
-
-        }
-
-    }
-
-
-    /*
-     * ==============================
-     * PROGRESSO
-     * ==============================
-     */
-
-    function updateProgress() {
-
-        const percentage =
-            ((currentLevel + 1) / levels.length) * 100;
-
-        progressElement.style.width =
-            percentage + "%";
-
-    }
-
-
-    /*
-     * ==============================
-     * TELA FINAL
-     * ==============================
-     */
-
-    function showEndScreen() {
-
-        gameScreen.classList.add("hidden");
-
-        endScreen.classList.remove("hidden");
-
-        finalScore.textContent =
-            `Sua pontuação final foi: ${score} pontos!`;
-
-    }
-
-
-    /*
-     * ==============================
-     * REINICIAR JOGO
-     * ==============================
-     */
-
-    function restartGame() {
-
-        currentLevel = 0;
-
-        score = 0;
-
-        scoreElement.textContent =
-            "0";
-
-        endScreen.classList.add("hidden");
-
-        gameScreen.classList.remove("hidden");
-
-        startLevel();
-
-    }
-
-
-    /*
-     * ==============================
-     * TECLADO FÍSICO
-     * ==============================
-     */
-
-    document.addEventListener(
-        "keydown",
-        function(event) {
-
-            const letter =
-                event.key.toUpperCase();
-
-            if (
-                /^[A-Z]$/.test(letter)
-            ) {
-
-                const buttons =
-                    document.querySelectorAll(".key");
-
-                buttons.forEach(button => {
-
-                    if (
-                        button.textContent === letter &&
-                        !button.disabled
-                    ) {
-
-                        guessLetter(
-                            letter,
-                            button
-                        );
-
-                    }
-
-                });
-
-            }
-
-        }
-    );
-
-
-    /*
-     * ==============================
-     * INICIAR JOGO
-     * ==============================
-     */
-
-    startLevel();
-
-</script>
+    <script src="script.js"></script>
 
 </body>
 </html>
